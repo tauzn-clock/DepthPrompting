@@ -1,9 +1,0 @@
-torch
-torchvision
-h5py
-tqdm
-scipy
-matplotlib
-nuscenes-devkit
-imageio
-pillow

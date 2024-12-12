@@ -12,11 +12,10 @@ RUN apt-get update && apt-get install -y \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
+RUN echo 123
+
 RUN git clone https://github.com/tauzn-clock/DepthPrompting
 WORKDIR /DepthPrompting
 
-RUN echo 123
 RUN chmod +x ./requirements.sh
 RUN ./requirements.sh
-
-RUN pip3 install -r requirements.txt
