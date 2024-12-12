@@ -4,7 +4,7 @@ apt-get -y install libgl1-mesa-glx -y
 apt-get -y install libglib2.0-0 -y
 pip install mmcv-full==1.3.13 -f https://download.openmmlab.com/mmcv/dist/cu111/torch1.9.0/index.html
 pip install jupyter notebook
-pip install Cython
+pip3 install --upgrade Cython
 pip install kornia
 
 
