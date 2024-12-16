@@ -1,0 +1,12 @@
+python3 test_multiDataLoader.py \
+    --data_name KITTIDC \
+    --dir_data /scratchdata/kitti_data \
+    --model_name depth_prompt_main \
+    --pretrain /scratchdata/pretrained/OURS/Depthprompting_depthformer_kitti.tar \
+    --top_crop 0 \
+    --kitti_val_lidars 64,32,16,8,4,2,1,0 \
+    --prop_kernel 9 \
+    --prop_time 18 \
+    --conf_prop \
+    --init_scailing \
+    --gpu 0 \
