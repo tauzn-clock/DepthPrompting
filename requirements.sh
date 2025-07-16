@@ -13,3 +13,5 @@ pip3 install matplotlib
 pip3 install nuscenes-devkit
 pip3 install imageio
 pip3 install pillow
+pip3 install torch==1.9.0+cu111 -f https://download.pytorch.org/whl/torch_stable.html
+pip3 install torchvision==0.10.0+cu111 -f https://download.pytorch.org/whl/torch_stable.html
