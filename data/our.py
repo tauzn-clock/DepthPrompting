@@ -34,6 +34,7 @@ class OUR(BaseDataset):
         self.args = args
         self.mode = mode
         self.num_sample = num_sample_test
+        self.data_length = args.data_length
 
         if self.mode =='test':
             assert type(self.num_sample) is int, "TEST dataset should have specific # of sample !!"
@@ -61,11 +62,13 @@ class OUR(BaseDataset):
     
         
     def __len__(self):
-        return len(self.sample_list)
+        return self.data_length
     
     def __getitem__(self, idx):
         rgb = Image.open(os.path.join(self.args.dir_data, f"rgb/{idx}.png")).convert('RGB')
         dep = Image.open(os.path.join(self.args.dir_data, f"depth/{idx}.png"))
+        dep = dep.convert('F')  # Convert to float format
+        dep = Image.fromarray(np.array(dep) / self.args.scale)
         
         rgb_480640 = 0
         dep_480640 = 0
