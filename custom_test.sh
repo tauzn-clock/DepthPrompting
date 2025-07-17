@@ -5,8 +5,6 @@ python3 custom_test.py  \
     --prop_kernel 9 \
     --conf_prop \
     --prop_time 18 \
-    --patch_height 240 \
-    --patch_width 320 \
     --nyu_val_samples 500 \
     --init_scailing \
     --gpu 0
