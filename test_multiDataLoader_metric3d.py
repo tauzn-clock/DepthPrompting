@@ -133,15 +133,12 @@ def test(test_loader, model, args, visual, target_sample):
         for i, sample in enumerate(test_loader):
             sample = {key: val.to('cuda') for key, val in sample.items() if val is not None}
 
-            raw_img = sample["rgb_h5"][0].detach().cpu().numpy()
-            raw_img = raw_img[...,::-1]
-            raw_img = raw_img[12:-12, 16:-16]
-
-            pred_depth, confidence, output_dict = model.inference({'input': raw_img})
-
-            print(pred_depth.shape, confidence.shape, output_dict.keys())
-
-            exit()
+            raw_img = sample["rgb_h5"].permute(0, 3, 1, 2).float() / 255.0
+            # Clip to [12:-12, 16:-16]
+            raw_img = raw_img[:, :, 12:-12, 16:-16]
+            depth_pred, _, _ = model.inference({'input': raw_img})
+            depth_pred = torch.nn.functional.interpolate(
+                depth_pred, size=(raw_img.shape[2], raw_img.shape[3]), mode='bilinear', align_corners=False)
 
             output = {'pred_init': depth_pred, 'pred': depth_pred}
 
