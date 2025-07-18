@@ -181,7 +181,7 @@ class NYU(BaseDataset):
         else:
             dep_sp,ns = self.get_sparse_depth(dep, self.args.num_sample, test=False, max_=self.args.sp_max)
 
-        output = {'rgb': rgb, 'dep': dep_sp, 'gt': dep, 'K': K, 'rgb_480640':rgb_480640, 'dep_480640':dep_480640, 'num_sample':ns}
+        output = {'rgb': rgb, 'dep': dep_sp, 'gt': dep, 'K': K, 'rgb_480640':rgb_480640, 'dep_480640':dep_480640, 'num_sample':ns, "rgb_h5": rgb_h5, "dep_h5": dep_h5}
 
         return output
 
