@@ -16,7 +16,7 @@ RUN apt-get update && apt-get install -y \
 
 RUN echo 123
 
-RUN git clone https://github.com/tauzn-clock/DepthPrompting
+RUN git clone --branch metric_3d develop https://github.com/tauzn-clock/DepthPrompting 
 WORKDIR /DepthPrompting
 
 RUN chmod +x ./requirements.sh
