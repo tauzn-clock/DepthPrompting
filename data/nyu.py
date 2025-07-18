@@ -51,12 +51,21 @@ class NYU(BaseDataset):
         else:
             raise print("Check the self.height !!")
 
-        self.K = torch.Tensor([
-            5.1885790117450188e+02 / 2.0,
-            5.1946961112127485e+02 / 2.0,
-            3.2558244941119034e+02 / 2.0 - 8.0,
-            2.5373616633400465e+02 / 2.0 - 6.0
-        ])
+        if self.height == 240:
+            self.K = torch.Tensor([
+                5.1885790117450188e+02 / 2.0,
+                5.1946961112127485e+02 / 2.0,
+                3.2558244941119034e+02 / 2.0 - 8.0,
+                2.5373616633400465e+02 / 2.0 - 6.0
+            ])
+        else:
+            self.K = torch.Tensor([
+                5.1885790117450188e+02,
+                5.1946961112127485e+02,
+                3.2558244941119034e+02 - 16.0,
+                2.5373616633400465e+02 - 12.0
+            ])
+            
         self.augment = False if self.mode == 'test' else self.args.augment
 
         with open(self.args.split_json) as json_file:
