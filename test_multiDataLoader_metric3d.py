@@ -17,7 +17,7 @@ from utils.util_func import *
 from tqdm import tqdm
 from config import args as args_config
 
-from depthanything_interface import *
+from metric3d_interface import *
 
 args = args_config
 best_rmse = 10.0
@@ -137,9 +137,11 @@ def test(test_loader, model, args, visual, target_sample):
             raw_img = raw_img[...,::-1]
             raw_img = raw_img[12:-12, 16:-16]
 
-            depth_pred = model.infer_image(raw_img)
-            depth_pred = rescale_pred(sample["dep"][0,0].detach().cpu().numpy(), depth_pred)
-            depth_pred = torch.from_numpy(depth_pred).unsqueeze(0).unsqueeze(0).to("cuda")
+            pred_depth, confidence, output_dict = model.inference({'input': raw_img})
+
+            print(pred_depth.shape, confidence.shape, output_dict.keys())
+
+            exit()
 
             output = {'pred_init': depth_pred, 'pred': depth_pred}
 
