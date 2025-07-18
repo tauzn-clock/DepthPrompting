@@ -139,7 +139,7 @@ def test(test_loader, model, args, visual, target_sample):
 
             depth_pred = model.infer_image(raw_img)
             depth_pred = rescale_pred(sample["dep"][0,0].detach().cpu().numpy(), depth_pred)
-            dept_pred = torch.from_numpy(depth_pred).unsqueeze(0).unsqueeze(0).to("cuda")
+            depth_pred = torch.from_numpy(depth_pred).unsqueeze(0).unsqueeze(0).to("cuda")
 
             output = {'pred_init': depth_pred, 'pred': depth_pred}
 

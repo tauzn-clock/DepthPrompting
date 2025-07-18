@@ -8,6 +8,6 @@ python3 test_multiDataLoader_depthanything.py  \
     --prop_time 18 \
     --patch_height 480 \
     --patch_width 640 \
-    --nyu_val_samples 500,200,100,5,1 \
+    --nyu_val_samples 1000,500,200,100,5,1 \
     --init_scailing \
     --gpu 0
