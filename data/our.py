@@ -44,13 +44,8 @@ class OUR(BaseDataset):
 
         self.height = args.patch_height
         self.width = args.patch_width
-        
-        if self.height==240:
-            self.crop_size = (228,304)
-        elif self.height==480:
-            self.crop_size = (456,608)
-        else:
-            raise print("Check the self.height !!")
+
+        self.crop_size = (self.height, self.width)
         
         self.K = torch.Tensor([
             self.args.fx,

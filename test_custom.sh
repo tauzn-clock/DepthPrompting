@@ -1,0 +1,13 @@
+python3 test_multiDataLoader.py  \
+    --data_name OUR \
+    --dir_data /scratchdata/alcove5 \
+    --model_name depth_prompt_main \
+    --pretrain /scratchdata/pretrained/OURS/Depthprompting_depthformer_nyu.tar \
+    --prop_kernel 9 \
+    --conf_prop \
+    --prop_time 18 \
+    --patch_height 400 \
+    --patch_width 640 \
+    --nyu_val_samples 500,200,100,5,1 \
+    --init_scailing \
+    --gpu 0

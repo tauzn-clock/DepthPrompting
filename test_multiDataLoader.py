@@ -70,6 +70,26 @@ def main():
         target_vals = convert_str_to_num(args.kitti_val_lidars, 'int')
         val_datasets = [dataset]
         num_sparse_dep = args.num_sample
+    elif args.data_name == 'OUR':
+        from data.our import OUR
+        import json
+        #assert args.patch_height == 240 
+        #assert args.patch_width == 320
+        with open(os.path.join(args.dir_data, "camera_info.json"), 'r') as f:
+            camera_info = json.load(f)
+            print("Camera Info:", camera_info)
+        args.fx = camera_info['P'][0]
+        args.fy = camera_info['P'][5]
+        args.cx = camera_info['P'][2]
+        args.cy = camera_info['P'][6]
+        
+        args.data_length = 393
+        args.max_depth = 10.0   
+        args.scale = 1000.0    
+        target_vals = convert_str_to_num(args.nyu_val_samples, 'int')
+        val_datasets = [OUR(args, 'test', num_sample_test=v) for v in target_vals]
+        print('Dataset is NYU')
+        num_sparse_dep = args.num_sample        
     else:
         print("Please Choice Dataset !!")
         raise NotImplementedError
