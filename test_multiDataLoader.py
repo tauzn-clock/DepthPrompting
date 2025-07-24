@@ -18,6 +18,9 @@ from tqdm import tqdm
 from config import args as args_config
 from model_list import import_model
 
+import matplotlib.pyplot as plt
+from depthanything_interface import *
+
 args = args_config
 best_rmse = 10.0
 
@@ -167,6 +170,14 @@ def test(test_loader, model, args, visual, target_sample):
         for i, sample in enumerate(test_loader):
             sample = {key: val.to('cuda') for key, val in sample.items() if val is not None}
             output = model(sample)
+            
+            if True:
+                pred_init = output["pred_init"][0,0].detach().cpu().numpy()
+                #print(pred_init.max(), pred_init.min())
+                #plt.imsave("pred_init.png", pred_init)            
+                depth_pred = rescale_pred(sample["dep"][0,0].detach().cpu().numpy(), pred_init)
+                #print(depth_pred.max(), depth_pred.min())
+                output["pred"] = torch.tensor(depth_pred, device='cuda').unsqueeze(0).unsqueeze(0)
 
             if target_sample==0: 
                 rmse_result, mae_result, abs_rel_result = eval_metric2(sample, output['pred_init'], args)
