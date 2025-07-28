@@ -19,7 +19,9 @@ from config import args as args_config
 from model_list import import_model
 
 import matplotlib.pyplot as plt
-from depthanything_interface import *
+import sys
+sys.path.append("/DepthPrompting/pylbfgs")
+from compressed_sensing import rescale_ratio
 
 args = args_config
 best_rmse = 10.0
@@ -171,11 +173,25 @@ def test(test_loader, model, args, visual, target_sample):
             sample = {key: val.to('cuda') for key, val in sample.items() if val is not None}
             output = model(sample)
             
-            if True:
+            #print(sample['gt'].detach().cpu().numpy().shape)
+            #plt.imsave("sample.png",sample['gt'][0,0].detach().cpu().numpy())
+            
+            #print(output['pred'].detach().cpu().numpy().shape)
+            #plt.imsave("pred.png",output['pred'][0,0].detach().cpu().numpy())
+            
+            #print(eval_metric2(sample, output['pred'], args))
+            
+            #print(sample["K"])
+            #print(sample["rgb"].max(), sample["rgb"].min(), sample["rgb"].shape)
+            #print(sample["dep"].max(), sample["dep"].min(), sample["dep"].shape)
+            #print(output['pred'].max(), output['pred'].min(), output['pred'].shape)
+            #print(output['pred_init'].max(), output['pred_init'].min(), output['pred_init'].shape)
+                        
+            if False:
                 pred_init = output["pred_init"][0,0].detach().cpu().numpy()
                 #print(pred_init.max(), pred_init.min())
                 #plt.imsave("pred_init.png", pred_init)            
-                depth_pred = rescale_pred(sample["dep"][0,0].detach().cpu().numpy(), pred_init)
+                depth_pred = rescale_ratio(sample["dep"][0,0].detach().cpu().numpy(), pred_init)
                 #print(depth_pred.max(), depth_pred.min())
                 output["pred"] = torch.tensor(depth_pred, device='cuda').unsqueeze(0).unsqueeze(0)
 
