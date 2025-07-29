@@ -184,7 +184,7 @@ class depthprompting(nn.Module):
         guide_sum = torch.sum(guide.abs(), dim=1, keepdim=True)
         guide = torch.div(guide, guide_sum)
 
-        if self.args.data_name == 'NYU' or self.args.data_name == 'IPAD':
+        if self.args.data_name == 'NYU' or self.args.data_name == 'IPAD' or self.args.data_name == 'SUNRGBD':
             for i in range(self.args.prop_time):
                 depth = self.prop_layer(guide, depth, pred_init)
                 depth = sparse_dep * sparse_mask + (1 - sparse_mask) * depth
