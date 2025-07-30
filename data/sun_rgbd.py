@@ -99,9 +99,9 @@ class SUN_RGBD(BaseDataset):
         dep = t_dep(dep)
         gt = t_dep(gt)
 
-        dep_sp, ns = self.get_sparse_depth(dep, self.num_sample_test, test = (self.mode == 'test'), max_ = self.num_sample_test)
+        dep_sp, ns = self.get_sparse_depth(gt, self.num_sample_test, test = (self.mode == 'test'), max_ = self.num_sample_test)
 
-        output = {'rgb': rgb, 'dep': dep_sp, 'gt': dep, 'K': 0, 'rgb_480640':0, 'dep_480640':0, 'num_sample':ns}
+        output = {'rgb': rgb, 'dep': dep_sp, 'gt': gt, 'K': 0, 'rgb_480640':0, 'dep_480640':0, 'num_sample':ns}
 
         return output
 
