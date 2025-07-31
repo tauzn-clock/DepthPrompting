@@ -145,6 +145,7 @@ def main():
 
     avg_rmse = AverageMeter('avg_rmse', ':6.4f')
     avg_mae = AverageMeter('avg_mae', ':6.4f')
+    avg_delta1 = AverageMeter('avg_de;ta1', ':6.4f')
     
     print('\n\n=== Arguments ===')
     cnt = 0
@@ -154,19 +155,33 @@ def main():
         if (cnt + 1) % 5 == 0:
             print('')
     print('\n')
-    
+        
     for target_val, val_loader in zip(target_vals, test_loaders):
-        val_rmse, val_mae = test(val_loader, model, args, visual, target_val)
+        val_rmse, val_mae, val_delta1 = test(val_loader, model, args, visual, target_val)
         avg_rmse.update(val_rmse)
         avg_mae.update(val_mae)
+        avg_delta1.update(val_delta1)
     print("Test for various Sampels/Lidars:",target_vals)
-    for rmse_,mae_ in zip(avg_rmse.list,avg_mae.list):
-        print('{:.4f}/{:.4f}'.format(rmse_,mae_),end=" ")
-    print("\n [Average RMSE/MAE] ==> {:2.4f}/{:2.4f}\n".format(avg_rmse.avg,avg_mae.avg))
+    
+    store_metrics = []
+    
+    for target_val_,rmse_,mae_,delta1_ in zip(target_vals,avg_rmse.list,avg_mae.list,avg_delta1.list):
+        print('{:.4f}/{:.4f}/{:.4f}'.format(rmse_,mae_,delta1_),end=" ")
+        store_metrics.append([target_val_,float(rmse_),float(mae_),float(delta1_)])
+        
+    import csv
+    import time
+    TIMESTAMP = str(time.time())
+    with open(f"./metrics/tmp{TIMESTAMP}.csv","w",newline="") as file:
+        writer = csv.writer(file)
+        writer.writerow(["Sample","RMSE","MAE","DELTA1"])
+        writer.writerows(store_metrics)
+    print("\n [Average RMSE/MAE/DELTA1] ==> {:2.4f}/{:2.4f}/{:2.4f}\n".format(avg_rmse.avg,avg_mae.avg,avg_delta1.avg))
     
 def test(test_loader, model, args, visual, target_sample):
     rmse = AverageMeter('RMSE', ':.4f')
     mae = AverageMeter('MAE', ':.4f')
+    delta1 = AverageMeter('DELTA1',':.4f')
     model.eval()
     pbar = tqdm(total=len(test_loader))
 
@@ -176,12 +191,12 @@ def test(test_loader, model, args, visual, target_sample):
             output = model(sample)
                         
             if False:
+                sampled_pts = sample["dep"][0,0].detach().cpu().numpy()
                 pred_init = output["pred_init"][0,0].detach().cpu().numpy()
-                #print(pred_init.max(), pred_init.min())
-                #plt.imsave("pred_init.png", pred_init)            
-                ratio = rescale_ratio(sample["dep"][0,0].detach().cpu().numpy(), pred_init, 0.05)
+                mask = sampled_pts > 0.0
+                ratio = rescale_ratio(sampled_pts, pred_init,relative_C=True)
                 depth_pred = pred_init * ratio
-                #print(depth_pred.max(), depth_pred.min())
+                depth_pred = depth_pred * (1-mask) + sampled_pts * mask
                 output["pred"] = torch.tensor(depth_pred, device='cuda').unsqueeze(0).unsqueeze(0)
 
             if target_sample==0: 
@@ -190,13 +205,13 @@ def test(test_loader, model, args, visual, target_sample):
             #print(rmse_result, mae_result, abs_rel_result)
             #exit()
 
-            #print(rmse_result, mae_result, abs_rel_result)
             #from debug import debug
             #debug(sample, output)
             #exit()
 
             rmse.update(rmse_result, sample['gt'].size(0))
             mae.update(mae_result, sample['gt'].size(0))
+            delta1.update(abs_rel_result,sample['gt'].size(0))
 
             if args.visualization:
                 visual.data_put(sample, output)
@@ -219,15 +234,15 @@ def test(test_loader, model, args, visual, target_sample):
             pbar.update(test_loader.batch_size)
 
         if args.use_raw_depth_as_input:
-            error_str_new = '[{}] #:{} | RMSE/MAE: {:.4f}/{:.4f}'.format('Test', 'raw', rmse.avg, mae.avg)
+            error_str_new = '[{}] #:{} | RMSE/MAE/DELTA1: {:.4f}/{:.4f}/{:.4f}'.format('Test', 'raw', rmse.avg, mae.avg, delta1.avg)
         else:
-            error_str_new = '[{}] #:{:3d} | RMSE/MAE: {:.4f}/{:.4f}'.format('Test', int(target_sample), rmse.avg, mae.avg)
+            error_str_new = '[{}] #:{:3d} | RMSE/MAE: {:.4f}/{:.4f}/{:.4f}'.format('Test', int(target_sample), rmse.avg, mae.avg, delta1.avg)
             
 
         pbar.set_description(error_str_new)
         pbar.close()
 
-    return rmse.avg, mae.avg
+    return rmse.avg, mae.avg, delta1.avg
 
 if __name__ == '__main__':
     main()
