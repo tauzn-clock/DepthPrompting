@@ -77,6 +77,15 @@ def main():
         target_vals = convert_str_to_num(args.kitti_val_lidars, 'int')
         val_datasets = [dataset]
         num_sparse_dep = args.num_sample
+    elif args.data_name == 'SCENENET':
+        from data.scenenet import SCENENET
+        args.patch_height, args.patch_width = 240, 320
+        args.data_path = './data/data_split/scenenet.csv'
+        target_vals = convert_str_to_num(args.nyu_val_samples, 'int')
+        val_datasets = [SCENENET(args, 'test', num_sample_test=v) for v in target_vals]
+        print("Using SCENENET")
+        num_sparse_dep = args.num_sample 
+        print(num_sparse_dep)
     elif args.data_name == 'OUR':
         from data.our import OUR
         import json
