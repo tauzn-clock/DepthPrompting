@@ -195,7 +195,7 @@ def test(test_loader, model, args, visual, target_sample):
                 pred_init = output["pred_init"][0,0].detach().cpu().numpy()
                 _,_,H,W = output["pred"].shape
                 R = int(sample["num_sample"]) / (H*W)
-                ratio = rescale_ratio(sampled_pts, pred_init,relative_C=R)
+                ratio = rescale_ratio(sampled_pts, pred_init,relative_C=1/R)
                 mask = sampled_pts > 0.0
                 depth_pred = pred_init * ratio
                 depth_pred = depth_pred * (1-mask) + sampled_pts * mask
