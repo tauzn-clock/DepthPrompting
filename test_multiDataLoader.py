@@ -190,11 +190,13 @@ def test(test_loader, model, args, visual, target_sample):
             sample = {key: val.to('cuda') for key, val in sample.items() if val is not None}
             output = model(sample)
                         
-            if False:
+            if True:
                 sampled_pts = sample["dep"][0,0].detach().cpu().numpy()
                 pred_init = output["pred_init"][0,0].detach().cpu().numpy()
+                _,_,H,W = output["pred"].shape
+                R = int(sample["num_sample"]) / (H*W)
+                ratio = rescale_ratio(sampled_pts, pred_init,relative_C=R)
                 mask = sampled_pts > 0.0
-                ratio = rescale_ratio(sampled_pts, pred_init,relative_C=True)
                 depth_pred = pred_init * ratio
                 depth_pred = depth_pred * (1-mask) + sampled_pts * mask
                 output["pred"] = torch.tensor(depth_pred, device='cuda').unsqueeze(0).unsqueeze(0)
