@@ -22,4 +22,6 @@ WORKDIR /DepthPrompting
 RUN chmod +x ./requirements.sh
 RUN ./requirements.sh
 
-RUN git clone https://github.com/YvanYin/Metric3D
+RUN pip3 install -r ./requirements.txt
+
+RUN pip3 install --branch inpaint https://github.com/tauzn-clock/pylbfgs
