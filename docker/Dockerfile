@@ -16,8 +16,10 @@ RUN apt-get update && apt-get install -y \
 
 RUN echo 123
 
-RUN git clone https://github.com/tauzn-clock/DepthPrompting
+RUN git clone -b depthanything https://github.com/tauzn-clock/DepthPrompting
 WORKDIR /DepthPrompting
 
 RUN chmod +x ./requirements.sh
 RUN ./requirements.sh
+
+RUN git clone https://github.com/DepthAnything/Depth-Anything-V2
