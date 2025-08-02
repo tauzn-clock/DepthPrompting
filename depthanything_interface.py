@@ -10,14 +10,14 @@ import numpy as np
 
 from depth_anything_v2.dpt import DepthAnythingV2
 
-def get_model():
+def get_model(encoder='vitb'):
     model_configs = {
         'vits': {'encoder': 'vits', 'features': 64, 'out_channels': [48, 96, 192, 384]},
         'vitb': {'encoder': 'vitb', 'features': 128, 'out_channels': [96, 192, 384, 768]},
         'vitl': {'encoder': 'vitl', 'features': 256, 'out_channels': [256, 512, 1024, 1024]}
     }
 
-    encoder = 'vitb'
+    encoder = encoder
     dataset = 'hypersim'
     max_depth = 20 # 20 for indoor model, 80 for outdoor model
 
@@ -48,11 +48,14 @@ if __name__ == "__main__":
     model.to("cuda:0")
     model.eval()
 
+    print(next(model.parameters()).device)
+
     import cv2
     import matplotlib.pyplot as plt
 
-    raw_img = cv2.imread('/scratchdata/nyu_plane/rgb/0.png')
+    raw_img = cv2.imread('/scratchdata/InformationOptimisation/rgb/0.png')
     plt.imsave("rgb.png", raw_img)
     print(raw_img.shape)
     depth = model.infer_image(raw_img) # HxW depth map in meters in numpy
     print(depth.shape)
+    plt.imsave("depth.png", depth, cmap='plasma')
