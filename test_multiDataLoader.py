@@ -18,6 +18,8 @@ from tqdm import tqdm
 from config import args as args_config
 from model_list import import_model
 
+from depthanything_interface import *
+
 import matplotlib.pyplot as plt
 import sys
 sys.path.append("/DepthPrompting/pylbfgs")
@@ -109,7 +111,10 @@ def main():
     else:
         print("Please Choice Dataset !!")
         raise NotImplementedError
-    model = import_model(args)
+    print("Using depth_anything model for evaluation...")
+    model = get_model()
+    model.to("cuda:0")
+    model.eval()
     args.num_sparse_dep = num_sparse_dep
 
     if args.seed is not None:
@@ -121,21 +126,6 @@ def main():
                       'which can slow down your training considerably! '
                       'You may see unexpected behavior when restarting '
                       'from checkpoints.')        
-
-    if args.pretrain is not None:
-        print("Pretrain Paramter Path:", args.pretrain)
-        checkpoint = torch.load(args.pretrain)
-        try:
-            loaded_state_dict = checkpoint['state_dict']
-        except:
-            loaded_state_dict = checkpoint
-        new_state_dict = OrderedDict()
-        for n, v in loaded_state_dict.items():
-            name = n.replace("module.", "")
-            new_state_dict[name] = v
-        model.load_state_dict(new_state_dict)
-        model = model.cuda()
-        print('Load pretrained weight')
 
     print('MaxDepth: {} | H,W: {},{}'.format(args.max_depth, args.patch_height, args.patch_width))
 
@@ -197,7 +187,18 @@ def test(test_loader, model, args, visual, target_sample):
     with torch.no_grad():
         for i, sample in enumerate(test_loader):
             sample = {key: val.to('cuda') for key, val in sample.items() if val is not None}
-            output = model(sample)
+            raw_img = sample["rgb_h5"][0].detach().cpu().numpy()
+            raw_img = raw_img[...,::-1]
+            
+            target_shape = sample["dep"][0,0].shape
+            raw_img = cv2.resize(raw_img, (target_shape[1], target_shape[0]), interpolation=cv2.INTER_LINEAR)
+
+            depth_pred = model.infer_image(raw_img)
+            depth_pred = torch.tensor(depth_pred, device='cuda').unsqueeze(0).unsqueeze(0)
+            #depth_pred = rescale_pred(sample["dep"][0,0].detach().cpu().numpy(), depth_pred)
+            #depth_pred = torch.from_numpy(depth_pred).unsqueeze(0).unsqueeze(0).to("cuda")
+
+            output = {'pred_init': depth_pred, 'pred': depth_pred}
                         
             if True:
                 sampled_pts = sample["dep"][0,0].detach().cpu().numpy()
