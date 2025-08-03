@@ -23,7 +23,7 @@ from depthanything_interface import *
 import matplotlib.pyplot as plt
 import sys
 sys.path.append("/DepthPrompting/pylbfgs")
-from compressed_sensing import rescale_ratio
+from compressed_sensing import rescale_ratio, rescale_ratio_proportional
 
 from PIL import Image
 
@@ -112,7 +112,7 @@ def main():
         print("Please Choice Dataset !!")
         raise NotImplementedError
     print("Using depth_anything model for evaluation...")
-    model = get_model()
+    model = get_model("vitb")
     model.to("cuda:0")
     model.eval()
     args.num_sparse_dep = num_sparse_dep
@@ -181,7 +181,7 @@ def test(test_loader, model, args, visual, target_sample):
     rmse = AverageMeter('RMSE', ':.4f')
     mae = AverageMeter('MAE', ':.4f')
     delta1 = AverageMeter('DELTA1',':.4f')
-    model.eval()
+    #model.eval()
     pbar = tqdm(total=len(test_loader))
 
     with torch.no_grad():
@@ -189,6 +189,7 @@ def test(test_loader, model, args, visual, target_sample):
             sample = {key: val.to('cuda') for key, val in sample.items() if val is not None}
             raw_img = sample["rgb_h5"][0].detach().cpu().numpy()
             raw_img = raw_img[...,::-1]
+            raw_img = raw_img[12:-12, 16:-16, :]
             
             target_shape = sample["dep"][0,0].shape
             raw_img = cv2.resize(raw_img, (target_shape[1], target_shape[0]), interpolation=cv2.INTER_LINEAR)
@@ -205,7 +206,8 @@ def test(test_loader, model, args, visual, target_sample):
                 pred_init = output["pred_init"][0,0].detach().cpu().numpy()
                 _,_,H,W = output["pred"].shape
                 R = int(sample["num_sample"]) / (H*W)
-                ratio = rescale_ratio(sampled_pts, pred_init,relative_C=1/R)
+                #ratio = rescale_ratio(sampled_pts, pred_init,relative_C=1/R)
+                ratio = rescale_ratio_proportional(sampled_pts, pred_init)
                 mask = sampled_pts > 0.0
                 depth_pred = pred_init * ratio
                 depth_pred = depth_pred * (1-mask) + sampled_pts * mask
