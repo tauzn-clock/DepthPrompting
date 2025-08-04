@@ -112,7 +112,7 @@ def main():
         print("Please Choice Dataset !!")
         raise NotImplementedError
     print("Using depth_anything model for evaluation...")
-    model = get_model("vitb")
+    model = get_model("vits")
     model.to("cuda:0")
     model.eval()
     args.num_sparse_dep = num_sparse_dep
@@ -206,8 +206,8 @@ def test(test_loader, model, args, visual, target_sample):
                 pred_init = output["pred_init"][0,0].detach().cpu().numpy()
                 _,_,H,W = output["pred"].shape
                 R = int(sample["num_sample"]) / (H*W)
-                #ratio = rescale_ratio(sampled_pts, pred_init,relative_C=1/R)
-                ratio = rescale_ratio_proportional(sampled_pts, pred_init)
+                ratio = rescale_ratio(sampled_pts, pred_init,relative_C=0.05)
+                #ratio = rescale_ratio_proportional(sampled_pts, pred_init)
                 mask = sampled_pts > 0.0
                 depth_pred = pred_init * ratio
                 depth_pred = depth_pred * (1-mask) + sampled_pts * mask
