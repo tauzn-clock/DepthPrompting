@@ -1,7 +1,7 @@
 import torch
 
-def get_model():
-    model = torch.hub.load('yvanyin/metric3d', 'metric3d_vit_small', pretrain=True)
+def get_model(model_name='metric3d_vit_small'):
+    model = torch.hub.load('yvanyin/metric3d', model_name, pretrain=True)
     return model
 
 if __name__ == "__main__":
@@ -14,8 +14,9 @@ if __name__ == "__main__":
     import numpy as np
     from matplotlib import pyplot as plt
 
-    rgb = Image.open('/scratchdata/InformationOptimisation/rgb/3.png').convert('RGB')
+    rgb = Image.open('/scratchdata/nyu_plane/rgb/3.png')#.convert('RGB')
     rgb = np.array(rgb)
+    rgb = rgb[20:-20, 20:-20, :]  # crop the image to remove black borders
 
     plt.imsave("rgb.png", rgb)
 
