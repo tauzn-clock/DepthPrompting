@@ -111,7 +111,7 @@ def main():
     else:
         print("Please Choice Dataset !!")
         raise NotImplementedError
-    model = get_model("metric3d_vit_small")
+    model = get_model("metric3d_convnext_tiny")
     model.cuda()
     args.num_sparse_dep = num_sparse_dep
 
@@ -185,13 +185,15 @@ def test(test_loader, model, args, visual, target_sample):
     with torch.no_grad():
         for i, sample in enumerate(test_loader):
             sample = {key: val.to('cuda') for key, val in sample.items() if val is not None}
-            raw_img = sample["rgb_h5"][:,12:-12, 16:-16, ::-1].permute(0,3,1,2).float()
-            print(raw_img.shape, sample["rgb_h5"].shape)
+            raw_img = sample["rgb_h5"][:,12:-12, 16:-16,:].permute(0,3,1,2).float() / 255.0
+            if args.patch_height == 240:
+                raw_img = raw_img[:, :, ::2, ::2]  # downsample by 2 if height is 240
             pred_depth, _, _ = model.inference({'input': raw_img})
-            print(pred_depth.shape, pred_depth.max(), pred_depth.min(), pred_depth.mean())
-            print(sample["gt"].shape)
-            plt.imsave("pred_depth.png", pred_depth[0, 0].cpu().numpy())
-            exit()
+            pred_depth = torch.nn.functional.interpolate(
+                pred_depth, size=(raw_img.shape[2], raw_img.shape[3]), mode='bilinear', align_corners=False)
+            output = {'pred': pred_depth, 'pred_init': pred_depth.clone()}
+            #print("pred_depth shape:", pred_depth.shape)
+            #plt.imsave("pred_depth.png", pred_depth[0, 0].cpu().numpy())
                                 
             if True:
                 sampled_pts = sample["dep"][0,0].detach().cpu().numpy()
