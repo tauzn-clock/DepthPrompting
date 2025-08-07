@@ -33,7 +33,7 @@ def main():
     
     if args.data_name == 'NYU':
         from data.nyu import NYU as NYU_Dataset
-        args.patch_height, args.patch_width = 240, 320
+        #args.patch_height, args.patch_width = 240, 320
         args.max_depth = 10.0
         args.split_json = './data/data_split/nyu.json'
         target_vals = convert_str_to_num(args.nyu_val_samples, 'int')

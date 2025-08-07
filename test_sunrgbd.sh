@@ -1,0 +1,13 @@
+python3 test_multiDataLoader.py  \
+    --data_name SUNRGBD \
+    --dir_data /scratchdata/ \
+    --model_name depth_prompt_main \
+    --pretrain /scratchdata/pretrained/OURS/Depthprompting_depthformer_nyu.tar \
+    --prop_kernel 9 \
+    --conf_prop \
+    --prop_time 18 \
+    --patch_height 480 \
+    --patch_width 640 \
+    --nyu_val_samples 62381,55450,34656,17328,6931,3466,693 \
+    --init_scailing \
+    --gpu 0
