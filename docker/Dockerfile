@@ -14,12 +14,14 @@ RUN apt-get update && apt-get install -y \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-RUN echo 123
-
 RUN git clone -b depthanything https://github.com/tauzn-clock/DepthPrompting
 WORKDIR /DepthPrompting
 
 RUN chmod +x ./requirements.sh
 RUN ./requirements.sh
 
+RUN git clone -b inpaint https://github.com/tauzn-clock/pylbfgs
+RUN cd pylbfgs && ./install_liblbfgs.sh
+
 RUN git clone https://github.com/DepthAnything/Depth-Anything-V2
+RUN cd Depth-Anything-V2 && pip3 install -r ./requirements.txt
