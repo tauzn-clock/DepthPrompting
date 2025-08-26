@@ -108,6 +108,7 @@ parser.add_argument('--affinity_visualization', action='store_true', default=Fal
 
 parser.add_argument('--kitti_spr_weight', type=str)
 
+parser.add_argument('--recovery_method', type=str, choices=('default','compsense','prop'),default='default')
 
 ### chanhwi Add ###
 parser.add_argument('--network',
