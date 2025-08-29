@@ -1,0 +1,13 @@
+python3 test_multiDataLoader.py  \
+    --data_name NYU \
+    --dir_data /scratchdata/nyudepthv2 \
+    --model_name depth_prompt_main \
+    --pretrain /scratchdata/pretrained/OURS/Depthprompting_depthformer_nyu.tar \
+    --prop_kernel 9 \
+    --conf_prop \
+    --prop_time 18 \
+    --patch_height 240 \
+    --patch_width 320 \
+    --nyu_val_samples 62381,55450,34656,13862,6931,3466,1386,693,347,139\
+    --init_scailing \
+    --gpu 0
