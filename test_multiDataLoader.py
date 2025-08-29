@@ -35,7 +35,7 @@ def main():
     
     if args.data_name == 'NYU':
         from data.nyu import NYU as NYU_Dataset
-        args.patch_height, args.patch_width = 240, 320
+        #args.patch_height, args.patch_width = 240, 320
         args.max_depth = 10.0
         args.split_json = './data/data_split/nyu.json'
         target_vals = convert_str_to_num(args.nyu_val_samples, 'int')
@@ -111,7 +111,7 @@ def main():
     else:
         print("Please Choice Dataset !!")
         raise NotImplementedError
-    model = get_model("metric3d_convnext_tiny")
+    model = get_model("metric3d_vit_large")
     model.cuda()
     args.num_sparse_dep = num_sparse_dep
 
@@ -192,8 +192,6 @@ def test(test_loader, model, args, visual, target_sample):
             pred_depth = torch.nn.functional.interpolate(
                 pred_depth, size=(raw_img.shape[2], raw_img.shape[3]), mode='bilinear', align_corners=False)
             output = {'pred': pred_depth, 'pred_init': pred_depth.clone()}
-            #print("pred_depth shape:", pred_depth.shape)
-            #plt.imsave("pred_depth.png", pred_depth[0, 0].cpu().numpy())
                                 
             if True:
                 sampled_pts = sample["dep"][0,0].detach().cpu().numpy()
