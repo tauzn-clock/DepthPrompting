@@ -8,6 +8,7 @@ python3 test_multiDataLoader.py  \
     --prop_time 18 \
     --patch_height 480 \
     --patch_width 640 \
-    --nyu_val_samples 62381,55450,34656,17328,6931,3466,693 \
+    --nyu_val_samples 62381,55450,34656,13862,6931,3466,1386,693,347 \
     --init_scailing \
+    --recovery_method default \
     --gpu 0
