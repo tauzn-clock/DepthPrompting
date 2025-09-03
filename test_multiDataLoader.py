@@ -19,6 +19,7 @@ from config import args as args_config
 from model_list import import_model
 
 from depthanything_interface import *
+from model_to_png import output_to_png
 
 import matplotlib.pyplot as plt
 import sys
@@ -35,7 +36,7 @@ def main():
     
     if args.data_name == 'NYU':
         from data.nyu import NYU as NYU_Dataset
-        args.patch_height, args.patch_width = 240, 320
+        #args.patch_height, args.patch_width = 240, 320
         args.max_depth = 10.0
         args.split_json = './data/data_split/nyu.json'
         target_vals = convert_str_to_num(args.nyu_val_samples, 'int')
@@ -187,6 +188,7 @@ def test(test_loader, model, args, visual, target_sample):
     with torch.no_grad():
         for i, sample in enumerate(test_loader):
             sample = {key: val.to('cuda') for key, val in sample.items() if val is not None}
+            output_to_png(sample["dep"], f"./depth_maps/sample_{target_sample}_{i}.png")
             raw_img = sample["rgb_h5"][0].detach().cpu().numpy()
             raw_img = raw_img[...,::-1]
             raw_img = raw_img[12:-12, 16:-16, :]
@@ -212,6 +214,8 @@ def test(test_loader, model, args, visual, target_sample):
                 depth_pred = pred_init * ratio
                 depth_pred = depth_pred * (1-mask) + sampled_pts * mask
                 output["pred"] = torch.tensor(depth_pred, device='cuda').unsqueeze(0).unsqueeze(0)
+
+            output_to_png(output["pred"], f"./depth_maps/pred_{target_sample}_{i}.png")
 
             if target_sample==0: 
                 rmse_result, mae_result, abs_rel_result = eval_metric2(sample, output['pred_init'], args)
