@@ -26,6 +26,7 @@ from compressed_sensing import rescale_ratio, rescale_ratio_proportional
 from PIL import Image
 
 from metric3d_interface import get_model
+from model_to_png import output_to_png
 
 args = args_config
 best_rmse = 10.0
@@ -185,12 +186,11 @@ def test(test_loader, model, args, visual, target_sample):
     with torch.no_grad():
         for i, sample in enumerate(test_loader):
             sample = {key: val.to('cuda') for key, val in sample.items() if val is not None}
+            output_to_png(sample["dep"], f"./depth_maps/sample_{i}.png")
             raw_img = sample["rgb_h5"][:,12:-12, 16:-16,:].permute(0,3,1,2).float() / 255.0
-            print(raw_img.shape)
             if args.patch_height == 240:
                 raw_img = raw_img[:, :, ::2, ::2]  # downsample by 2 if height is 240
             pred_depth, _, _ = model.inference({'input': raw_img})
-            print(pred_depth.shape)
             pred_depth = torch.nn.functional.interpolate(
                 pred_depth, size=(raw_img.shape[2], raw_img.shape[3]), mode='bilinear', align_corners=False)
             output = {'pred': pred_depth, 'pred_init': pred_depth.clone()}
@@ -206,6 +206,8 @@ def test(test_loader, model, args, visual, target_sample):
                 depth_pred = pred_init * ratio
                 depth_pred = depth_pred * (1-mask) + sampled_pts * mask
                 output["pred"] = torch.tensor(depth_pred, device='cuda').unsqueeze(0).unsqueeze(0)
+
+            output_to_png(output["pred"], f"./depth_maps/pred_{i}.png")
 
             if target_sample==0: 
                 rmse_result, mae_result, abs_rel_result = eval_metric2(sample, output['pred_init'], args)
