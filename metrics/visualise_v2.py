@@ -20,11 +20,11 @@ MAX_PT = 228*304
 plt.rcParams['lines.linewidth'] = 3
 plt.rcParams['lines.markersize'] = 8
 plt.rcParams['axes.linewidth'] = 1          # Axis border (spine) width
-plt.rcParams['xtick.major.width'] = 1       # Major tick width (x-axis)
-plt.rcParams['ytick.major.width'] = 1       # Major tick width (y-axis)
-plt.rcParams['xtick.minor.width'] = 1       # Optional: minor ticks
-plt.rcParams['ytick.minor.width'] = 1
-plt.rcParams['font.size'] = 16                # Base font size
+#plt.rcParams['xtick.major.width'] = 1       # Major tick width (x-axis)
+#plt.rcParams['ytick.major.width'] = 1       # Major tick width (y-axis)
+#plt.rcParams['xtick.minor.width'] = 1       # Optional: minor ticks
+#plt.rcParams['ytick.minor.width'] = 1
+plt.rcParams['font.size'] = 18                # Base font size
 
 depth_prompting = depthprompting = read_csv("/DepthPrompting/metrics/DepthPromptingNYU.csv", MAX_PT)
 depth_prompting_prop = read_csv("/DepthPrompting/metrics/PropNYU.csv", MAX_PT)
@@ -45,10 +45,11 @@ metric_s_full = read_csv("/DepthPrompting/metrics/metric_s_full.csv", MAX_PT*4)
 metric_l_full = read_csv("/DepthPrompting/metrics/metric_l_full.csv", MAX_PT*4)
 
 fig, ax = plt.subplots(1,3,figsize=(25, 7))
+plt.subplots_adjust(wspace=0.3, hspace=0.4)
 
-ax[0].set_xlabel("Sampled Points Percentage")
-ax[1].set_xlabel("Sampled Points Percentage")
-ax[2].set_xlabel("Sampled Points Percentage")
+ax[0].set_xlabel("Sampled Ratio")
+ax[1].set_xlabel("Sampled Ratio")
+ax[2].set_xlabel("Sampled Ratio")
 
 ax[0].set_ylabel("RMSE/m")
 ax[1].set_ylabel("MAE/m")
@@ -82,8 +83,8 @@ ax[0].set_ylim(0,0.1)
 ax[1].set_ylim(0,0.025)
 ax[2].set_ylim(0.995,1)
 
-ax[1].legend(loc='upper center', bbox_to_anchor=(0.5, -0.1),handlelength=3,
-          fancybox=True, shadow=True, ncol=5)
+ax[1].legend(loc='upper center', bbox_to_anchor=(0.5, -0.1),
+          fancybox=True, shadow=True, ncol=3)
 
 
-plt.savefig("test.png", bbox_inches="tight", pad_inches=0)
+plt.savefig("graph.png", bbox_inches="tight", pad_inches=0)
