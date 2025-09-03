@@ -24,6 +24,7 @@ sys.path.append("/DepthPrompting/pylbfgs")
 from compressed_sensing import rescale_ratio, rescale_ratio_proportional
 
 from PIL import Image
+from model_to_png import output_to_png
 
 args = args_config
 best_rmse = 10.0
@@ -197,6 +198,8 @@ def test(test_loader, model, args, visual, target_sample):
     with torch.no_grad():
         for i, sample in enumerate(test_loader):
             sample = {key: val.to('cuda') for key, val in sample.items() if val is not None}
+            if args.save_image:
+                output_to_png(sample["dep"], f"./depth_maps/sample_{target_sample}_sample_{i}.png")
             output = model(sample)
                         
             if args.recovery_method != "default":
@@ -210,6 +213,9 @@ def test(test_loader, model, args, visual, target_sample):
                 depth_pred = pred_init * ratio
                 depth_pred = depth_pred * (1-mask) + sampled_pts * mask
                 output["pred"] = torch.tensor(depth_pred, device='cuda').unsqueeze(0).unsqueeze(0)
+
+            if args.save_image:
+                output_to_png(output["pred"], f"./depth_maps/pred_{target_sample}_{i}.png")
 
             if target_sample==0: 
                 rmse_result, mae_result, abs_rel_result = eval_metric2(sample, output['pred_init'], args)
