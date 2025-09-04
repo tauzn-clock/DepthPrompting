@@ -1,4 +1,4 @@
-python3 test_multiDataLoader.py  \
+python3 test_multiDataLoader_render.py  \
     --data_name NYU \
     --dir_data /scratchdata/nyudepthv2 \
     --model_name depth_prompt_main \
