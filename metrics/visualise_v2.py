@@ -58,18 +58,18 @@ ax[2].set_ylabel("DELTA1")
 for i in range(1,4):
     ax[i-1].plot(depth_prompting[:,0], depth_prompting[:,i], 'k--', marker="^", label='DepthPrompting')
     #ax[i-1].plot(depth_prompting_prop[:,0], depth_prompting_prop[:,i], 'k-', label='DepthFormer + Proportional')
-    ax[i-1].plot(depth_prompting_cs[:,0], depth_prompting_cs[:,i], 'r:', marker="^", label='DepthFormer + CS')
+    ax[i-1].plot(depth_prompting_cs[:,0], depth_prompting_cs[:,i], 'r--', marker="^", label='DepthFormer + CS')
 
-    ax[i-1].plot(da_s[:,0], da_s[:,i], 'g:', marker="^", label='DepthAnythingV2-Small + CS')
+    ax[i-1].plot(da_s[:,0], da_s[:,i], 'g--', marker="^", label='DepthAnythingV2-Small + CS')
     #ax[i-1].plot(da_b[:,0], da_b[:,i], 'g-', marker="s", label='DepthAnythingV2-Base + CS')
     #ax[i-1].plot(da_l[:,0], da_l[:,i], 'g-', marker="o", label='DepthAnythingV2-Large + CS')
 
-    ax[i-1].plot(metric_s[:,0], metric_s[:,i], 'b:', marker="^", label='Metric3D-Small + CS')
+    ax[i-1].plot(metric_s[:,0], metric_s[:,i], 'b--', marker="^", label='Metric3D-Small + CS')
     #ax[i-1].plot(metric_l[:,0], metric_l[:,i], 'b-', marker="o", label='Metric3D-Large + CS')
 
-    ax[i-1].plot(da_s_full[:,0], da_s_full[:,i], 'g--', marker="^", label='DepthAnythingV2-Small + CS (Full Res)')
+    ax[i-1].plot(da_s_full[:,0], da_s_full[:,i], 'g-', marker="^", label='DepthAnythingV2-Small + CS (Full Res)')
     
-    ax[i-1].plot(metric_s_full[:,0], metric_s_full[:,i], 'b--', marker="^", label='Metric3D-Small + CS (Full Res)')
+    ax[i-1].plot(metric_s_full[:,0], metric_s_full[:,i], 'b-', marker="^", label='Metric3D-Small + CS (Full Res)')
 
     #ax[i-1].set_xscale('log')
     ax[i-1].grid(True)
