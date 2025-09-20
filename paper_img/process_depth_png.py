@@ -39,8 +39,6 @@ for i in range(N):
     ax[i,0].set_xticks([])
     ax[i,0].set_yticks([])
     
-    ax[]
-
 ax[N-1,0].set_xlabel('Ground Truth')
 ax[N-1,1].set_xlabel('Depth Prompting')
 ax[N-1,2].set_xlabel('Depth Prompting Error')
