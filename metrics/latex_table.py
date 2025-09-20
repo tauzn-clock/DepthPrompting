@@ -1,6 +1,6 @@
 import csv 
 
-with open('DepthAnything_s_full_our.csv', mode='r') as file:
+with open('Metric3d_our_vit_l.csv', mode='r') as file:
     reader = csv.reader(file)
     store = []
     for row in reader:
