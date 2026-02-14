@@ -1,0 +1,15 @@
+Main Extry Point:
+test_nyu.sh
+
+To change model:
+Go to line 115 of test_multiDataLoader.py and change model name
+
+To change to between compressed sensing and naive proportional rescaling:
+Go to line 203 and 204 of test_multiDataLoader.py and uncomment line
+Use "ratio = rescale_ratio(sampled_pts, pred_init,relative_C=0.05)" for compressed sensing, tune regulariser with change
+Use "ratio = rescale_ratio_proportional(sampled_pts, pred_init)" for naive proportional
+
+Run compressed_sensing.py for sanity check.
+
+If remote link for data is not working, download from Kaggle
+https://www.kaggle.com/datasets/artemmmtry/nyu-depth-v2/data
