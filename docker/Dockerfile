@@ -24,4 +24,6 @@ RUN ./requirements.sh
 
 RUN pip3 install -r ./requirements.txt
 
-RUN git clone --branch inpaint https://github.com/tauzn-clock/pylbfgs
+RUN git clone -b inpaint https://github.com/tauzn-clock/pylbfgs
+RUN cd pylbfgs && ./install_liblbfgs.sh
+
