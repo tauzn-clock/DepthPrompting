@@ -25,3 +25,5 @@ RUN cd pylbfgs && ./install_liblbfgs.sh
 
 RUN git clone https://github.com/DepthAnything/Depth-Anything-V2
 RUN cd Depth-Anything-V2 && pip3 install -r ./requirements.txt
+
+# May need to fix torch version with pip install --upgrade torch torchvision

@@ -188,7 +188,8 @@ def test(test_loader, model, args, visual, target_sample):
     with torch.no_grad():
         for i, sample in enumerate(test_loader):
             sample = {key: val.to('cuda') for key, val in sample.items() if val is not None}
-            output_to_png(sample["dep"], f"./depth_maps/sample_{target_sample}_{i}.png")
+            # Enable to save depth maps as png files for visualization
+            #output_to_png(sample["dep"], f"./depth_maps/sample_{target_sample}_{i}.png")
             raw_img = sample["rgb_h5"][0].detach().cpu().numpy()
             raw_img = raw_img[...,::-1]
             raw_img = raw_img[12:-12, 16:-16, :]
@@ -214,8 +215,8 @@ def test(test_loader, model, args, visual, target_sample):
                 depth_pred = pred_init * ratio
                 depth_pred = depth_pred * (1-mask) + sampled_pts * mask
                 output["pred"] = torch.tensor(depth_pred, device='cuda').unsqueeze(0).unsqueeze(0)
-
-            output_to_png(output["pred"], f"./depth_maps/pred_{target_sample}_{i}.png")
+            # Enable to save depth maps as png files for visualization
+            #output_to_png(output["pred"], f"./depth_maps/pred_{target_sample}_{i}.png")
 
             if target_sample==0: 
                 rmse_result, mae_result, abs_rel_result = eval_metric2(sample, output['pred_init'], args)
